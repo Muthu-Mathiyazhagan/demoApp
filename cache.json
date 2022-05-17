@@ -1,0 +1,33 @@
+{
+  "user": {
+    "name": "Muthu",
+    "email": "muthu@divum.in",
+    "phone": "9876543210"
+  },
+  "addresses": [
+    {
+      "type": "office",
+      "addressLine1": "Divum",
+      "addressLine2": "Domlur",
+      "city": "Bangalore",
+      "postalCode": "560071",
+      "country": "India"
+    },
+    {
+      "type": "home",
+      "addressLine1": "2/16, Kanniseriputhur",
+      "addressLine2": "not needed",
+      "city": "Viruthunagar",
+      "postalCode": "626204",
+      "country": "India"
+    },
+    {
+      "type": "stay",
+      "addressLine1": "501,9/2,NGR Layout",
+      "addressLine2": "Rupena Agrahara",
+      "city": "Bangalore",
+      "postalCode": "560068",
+      "country": "India"
+    }
+  ]
+}
