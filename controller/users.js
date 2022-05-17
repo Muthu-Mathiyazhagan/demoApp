@@ -36,33 +36,33 @@ router.post("/", async (req, res) => {
 
     console.log(address);
 
-    let { error } = addressSchemaJoi.validate(address);
-    if (error) {
-      console.log("Error at 39", error);
+    let { error: errorA } = addressSchemaJoi.validate(address);
+    if (errorA) {
+      console.log("Error at 39", errorA);
       await User.findByIdAndRemove(user._id)
         .then((result) => {
-          return res.status(500).send("Something went wrong" + error);
+          return res.status(500).send("Something went wrong" + errorA);
         })
         .catch((ex) => {
-          return res.status(500).send("Something went wrong" + error + ex);
+          return res.status(500).send("Something went wrong" + errorA + ex);
         });
       return res
         .status(400)
-        .send(error.details[0].message + "Address: \n" + address);
+        .send(errorA.details[0].message + "Address: \n" + address);
     }
 
     address = new Address(address)
       .save()
-      .then((res) => {
+      .then((result) => {
         count++;
         if (req.body.addresses.length == count) {
           console.log(count);
           return res.status(200).send(user);
         }
       })
-      .catch(async (error) => {
+      .catch(async (errorB) => {
         await User.findByIdAndRemove(user._id).then((result) => {
-          return res.status(500).send("Something went wrong");
+          return res.status(400).send(`Something went wrong : ${errorB}`);
         });
       });
   }
