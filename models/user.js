@@ -28,6 +28,10 @@ const User = mongoose.model("User", userSchema);
 const Address = mongoose.model(
   "Address",
   new mongoose.Schema({
+    type: {
+      type: String,
+      required: true,
+    },
     userId: {
       type: String,
       required: true,
@@ -42,7 +46,6 @@ const Address = mongoose.model(
       type: String,
       maxlength: 50,
       required: true,
-      unique: true,
     },
     city: {
       type: String,

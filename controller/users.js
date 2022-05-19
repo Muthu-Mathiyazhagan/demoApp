@@ -11,12 +11,17 @@ const {
 
 router.use(express.json());
 
-router.post("/", async (req, res) => {
-  //   return res.status(200).send("Am working.. :)");
-  //   console.log(req.body.user);
-  //   console.log(req.body.addresses[1]);
-  //   return res.status(200).send("Am working.. :)");
+router.get("/", async (req, res) => {
+  let addresses = await Address.find({
+    userId: req.body.userId,
+  });
+  if (!req.body.home) {
+    
+  }
+  return res.status(200).send(`${addresses}`);
+});
 
+router.post("/", async (req, res) => {
   let { error } = userSchemaJoi.validate(req.body.user);
   if (error)
     return res.status(400).send(`${error.details[0].message} : User Validate`);
@@ -27,32 +32,31 @@ router.post("/", async (req, res) => {
 
   user = await user.save();
   console.log(user + " saved successfully");
-  let id = user._id.toString();
+
   console.log(req.body.addresses.length);
   //   return res.status(200).send(user._id);
   let count = 0;
   for (let index = 0; index < req.body.addresses.length; index++) {
     let address = req.body.addresses[index];
-    // address.userId = "62839e51738e49e4661e3972";
-
+    let id = user._id.toString();
     address.userId = id.split('"')[0];
     console.log("address.userId: " + address.userId);
 
     console.log(address);
 
-    let { error: errorA } = addressSchemaJoi.validate(address);
-    if (errorA) {
-      console.log("Error at 39", errorA);
+    let { error } = addressSchemaJoi.validate(address);
+    if (error) {
+      console.log(error);
       User.findByIdAndRemove(user._id)
-        .then((result) => {
+        .then(() => {
           return res
             .status(500)
-            .send("Something went wrong : Error on Validate address" + errorA);
+            .send("Something went wrong : Error on Validate address" + error);
         })
         .catch((ex) => {
           return res
             .status(500)
-            .send("Something went wrong : Error on Remove user" + errorA + ex);
+            .send("Something went wrong : Error on Remove user" + error + ex);
         });
       return res
         .status(400)
@@ -61,28 +65,29 @@ router.post("/", async (req, res) => {
 
     address = new Address(address)
       .save()
-      .then((result) => {
+      .then(() => {
         count++;
+        console.log(count);
         if (req.body.addresses.length == count) {
           console.log(count);
-          return res.status(200).send(user);
+          return res
+            .status(200)
+            .send(_.pick(user, ["name", "email", "phone", "-__v"]));
         }
       })
-      .catch((saveError) => {
-        User.findByIdAndRemove(user._id).then((result) => {
+      .catch((ex) => {
+        User.findByIdAndRemove(user._id).then(() => {
           return res
             .status(400)
-            .send(`Something went wrong : Save Address : ${saveError}`);
+            .send(`Something went wrong : Save Address : ${ex}`);
         });
       })
-      .catch((errorOnRemove) => {
+      .catch((ex) => {
         return res
           .status(400)
-          .send(`Something went wrong : Save Address : ${errorOnRemove}`);
+          .send(`Something went wrong : Save Address : ${ex}`);
       });
   }
 });
-
-
 
 module.exports = router;
