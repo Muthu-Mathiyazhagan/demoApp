@@ -28,7 +28,7 @@ const User = mongoose.model("User", userSchema);
 const Address = mongoose.model(
   "Address",
   new mongoose.Schema({
-    id: {
+    userId: {
       type: String,
       required: true,
     },
